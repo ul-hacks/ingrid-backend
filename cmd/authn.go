@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"fmt"
-	authn "ingrid/v1/services/authn"
+	authn "ingrid/v1/src/services/authn"
 	"net"
 
 	"github.com/spf13/cobra"

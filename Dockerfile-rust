@@ -1,9 +1,9 @@
 # rust portion:
 FROM rust:latest
-WORKDIR /app
+WORKDIR /src/app
 
 COPY . .
 
-# RUN cargo install --path .
+RUN cargo install --path .
 
-CMD ["cargo", "--version"]
+CMD ["cargo", "run"]

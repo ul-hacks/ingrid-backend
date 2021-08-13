@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"fmt"
-	provider_discovery "ingrid/v1/services/provider_discovery"
+	provider_discovery "ingrid/v1/src/services/provider_discovery"
 	"net"
 
 	"github.com/spf13/cobra"

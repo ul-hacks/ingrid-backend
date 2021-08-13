@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"fmt"
-	server "ingrid/v1/services/server/go"
+	server "ingrid/v1/src/services/server/go"
 	"net"
 
 	"github.com/spf13/cobra"
