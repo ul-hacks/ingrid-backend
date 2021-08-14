@@ -1,0 +1,48 @@
+version: '3.7'
+
+services:
+    server-rust:
+        image: ulhacks/ingrid-backend-rust:latest
+        # specify specific ports we want to use here:
+        ports:
+            - 8080
+    server-go:
+        image: ulhacks/ingrid-backend-go:latest
+        # specify specific ports to use:
+        command:
+            - /go/bin/app
+            - server
+        ports:
+            - 8081
+    
+    authn:
+        image: ulhacks/ingrid-backend-go:latest
+        # specify specific ports to use:
+        command:
+            - /go/bin/app
+            - authn
+        ports:
+            - 8082
+    
+    provider_discovery:
+        image: ulhacks/ingrid-backend-go:latest
+        command:
+            - /go/bin/app
+            - provider_discovery
+        ports:
+            - 8080:8083
+    
+    providers-rust:
+        image: ulhacks/ingrid-backend-rust:latest
+        ports:
+            - 8084
+
+    providers-go:
+        image: ulhacks/ingrid-backend-go:latest
+        command:
+            - /go/bin/app
+            - provider
+        ports:
+            - 8085
+
+    # frontend:

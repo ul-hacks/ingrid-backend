@@ -1,0 +1,7 @@
+[package]
+name = "ingrid"
+version = "0.1.0"
+authors = ["Eric"]
+edition = "2018"
+
+[dependencies]
