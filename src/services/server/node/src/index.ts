@@ -11,6 +11,7 @@ import Redis from 'ioredis';
 import { SESSION_SECRET } from './config';
 import { UserProfileResolver } from './resolvers/user.resolver';
 import { AuthResolver } from './resolvers/auth.resolver';
+import { postgresConnect } from './services/db.service';
 
 const main = async () => {
 
@@ -24,20 +25,20 @@ const main = async () => {
   });
   const app = express();
 
-  const RedisStore = connectRedis(session);
+  // const RedisStore = connectRedis(session);
 
-  app.use(session({
-    store: new RedisStore({ client: new Redis() as any }),
-    name: 'session',
-    secret: SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      maxAge: 1000*60*60*24*7*365
-    }
-  }));
+  // app.use(session({
+  //   store: new RedisStore({ client: new Redis() as any }),
+  //   name: 'session',
+  //   secret: SESSION_SECRET,
+  //   resave: false,
+  //   saveUninitialized: false,
+  //   cookie: {
+  //     httpOnly: true,
+  //     secure: process.env.NODE_ENV === "production",
+  //     maxAge: 1000*60*60*24*7*365
+  //   }
+  // }));
 
   app.use(express.json());
   app.use(cors());
@@ -47,6 +48,8 @@ const main = async () => {
   app.listen(5001, () => {
     console.log('server started');
   });
+
+  postgresConnect();
 
 }
 
