@@ -6,8 +6,8 @@ import {
 } from "type-graphql";
 import { UserInputError } from 'apollo-server-errors';
 
-import { UserProfile, Extension, Heatmap, HeatmapItem } from '../types/user.types';
-import { ExtensionEnum, getExtension } from '../services/extension.service';
+import { UserProfile, Extension, Heatmap, Badge, HeatmapItem, ExtensionEnum } from '../types/user.types';
+import { getExtension } from '../services/extension.service';
 
 @Resolver(of => UserProfile)
 export class UserProfileResolver implements ResolverInterface<UserProfile> {
@@ -31,6 +31,9 @@ export class UserProfileResolver implements ResolverInterface<UserProfile> {
   async extensions(
     @Root() userProfile: UserProfile
   ): Promise<Extension[]> {
+
+    /* do db query */
+
     return [];
   }
 
@@ -52,16 +55,18 @@ export class UserProfileResolver implements ResolverInterface<UserProfile> {
     for (const [ provider, account ] of extensionMap) {
 
       /* grab data depending on extension */
-      let extensionHeatmap = getExtension(provider, account);
+      let extensionHeatmap: HeatmapItem[] = await getExtension(provider, account);
 
-
-      /* filter the data */
-      if (from !== null) { }
-      if (to !== null) { }
+      /* filter the data (TODO: validate the date strings) */
+      if (from !== null)
+        extensionHeatmap.filter(heatmapItem => (new Date(heatmapItem.date)).getTime()-(new Date(from)).getTime());
+  
+      if (to !== null)
+        extensionHeatmap.filter(heatmapItem => (new Date(to)).getTime()-(new Date(heatmapItem.date)).getTime());
 
       let newHeatmap = new Heatmap();
       newHeatmap.provider = provider;
-      newHeatmap.heatmapItems = [];
+      newHeatmap.heatmapItems = extensionHeatmap;
 
       userHeatmaps.push(newHeatmap);
     }
@@ -69,10 +74,24 @@ export class UserProfileResolver implements ResolverInterface<UserProfile> {
     return userHeatmaps; 
   }
 
-  // hook this up with auth later
-  @Mutation(() => UserProfile)
-  async updateUserExtensions() {
+  @FieldResolver()
+  async badges(
+    @Root() userProfile: UserProfile
+  ): Promise<Badge[]> {
 
+    return [];
   }
+
+  // hook this up with auth later
+  // @Mutation(() => UserProfile)
+  // async updateUserExtensions(
+  //   @Arg('extensionList') extensionList: Extension[]
+  // ) {
+    
+  //   /* wipe all of user's extensions */
+
+  //   /* reinsert them all */
+
+  // }
 
 }

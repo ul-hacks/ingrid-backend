@@ -1,6 +1,11 @@
 
 import { Field, ObjectType } from 'type-graphql'
 
+export const enum ExtensionEnum {
+  GITHUB = 'github',
+  GITLAB = 'gitlab'
+}
+
 @ObjectType()
 export class UserProfile {
 
@@ -19,13 +24,16 @@ export class UserProfile {
   @Field(() => [Heatmap])
   heatmaps: Heatmap[];
 
+  @Field(() => [Badge])
+  badges: Badge[];
+
 }
 
 @ObjectType()
 export class Extension {
   
   @Field()
-  provider: string;
+  provider: ExtensionEnum;
 
   @Field()
   account: string;
@@ -38,14 +46,20 @@ export class Heatmap {
   @Field()
   provider: string;
 
-  @Field()
+  @Field(() => [HeatmapItem])
   heatmapItems: HeatmapItem[]
 
 }
 
-export type HeatmapItem = {
-  weight: number,
-  date: string
+@ObjectType()
+export class HeatmapItem {
+
+  @Field()
+  weight: number;
+
+  @Field()
+  date: string;
+
 }
 
 @ObjectType()
