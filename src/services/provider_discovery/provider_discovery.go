@@ -62,8 +62,7 @@ func (s *Server) discovery(w http.ResponseWriter, r *http.Request) {
 			fmt.Println("no username provided!")
 			return
 		}
-		// sendRequestParseBody(fmt.Sprintf("http://providers-rust:8084/github?username=%s", username))
-		sendRequestParseBody(fmt.Sprintf("http://providers-rust:8084/"))
+		sendRequestParseBody(fmt.Sprintf("http://providers-python:8086/github?username=%s", username))
 	}
 
 }

@@ -41,7 +41,7 @@ services:
             - target/release/ingrid
             - providers
         ports:
-            - 8084:8084
+            - 8084
 
     providers-go:
         image: ulhacks/ingrid-backend-go:latest
@@ -50,5 +50,13 @@ services:
             - provider
         ports:
             - 8085
+
+    providers-python:
+        image: ulhacks/ingrid-backend-python:latest
+        command:
+            - python3
+            - main.py
+        ports:
+            - 8086
 
     # frontend:
