@@ -27,22 +27,6 @@ export const dbRegisterUser = async (username: string, password: string) =>
   .then((res) => [null, res.rows[0].id])
   .catch(err => [err, null])
 
-// export const dbFindUserId = async (username: string) =>
-//   postgresClient.query(
-//     'SELECT id FROM Users WHERE username = $1',
-//     [username]
-//   )
-//   .then((res) => [null, res.rows[0].id])
-//   .catch(err => [err, null])
-
-// export const dbGetUserHashedPass = async (username: string) =>
-//   postgresClient.query(
-//     'SELECT id, password FROM Users WHERE username = $1',
-//     [username]
-//   )
-//   .then((res) => [null, res.rows[0]])
-//   .catch(err => [err, null])
-
 export const dbGetUserByUsername = async (username: string) =>
   postgresClient.query(
     'SELECT * FROM Users WHERE username = $1',
@@ -51,3 +35,28 @@ export const dbGetUserByUsername = async (username: string) =>
   .then((res) => [null, res.rows])
   .catch(err => [err, null])
 
+// CREATE TYPE providerenum AS ENUM ('github', 'gitlab');
+// CREATE TABLE Extensions (
+//   id serial primary key,
+//   userid int not null,
+//   provider providerenum not null,
+//   account varchar(256) not null,
+//   CONSTRAINT userid_foreign FOREIGN KEY (userid) REFERENCES Users (id)
+// );
+
+export const dbGetUserExtensions = async (username: string) =>
+  postgresClient.query(
+    `SELECT * FROM Users U INNER JOIN Extensions E ON U.id = E.userid
+    WHERE U.username = $1`,
+    [username]
+  )
+  .then((res) => [null, res.rows])
+  .catch(err => [err, null])
+
+// export const dbWipeUserExtensions = async (username: string) =>
+//   postgresClient.query(
+  
+//   )
+
+// export const dbSetUserExtensions = async (username: string) =>
+  

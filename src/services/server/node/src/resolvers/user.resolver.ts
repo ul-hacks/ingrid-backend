@@ -1,13 +1,33 @@
 
 import {
   ResolverInterface,
-  Root, Arg, Query, Authorized,
-  Resolver, FieldResolver, Mutation
+  Root, Arg, Args, Query, Authorized, Field,
+  Resolver, FieldResolver, Mutation, ArgsType, InputType
 } from "type-graphql";
 import { UserInputError } from 'apollo-server-errors';
 
 import { UserProfile, Extension, Heatmap, Badge, HeatmapItem, ExtensionEnum } from '../types/user.types';
 import { getExtension } from '../services/extension.service';
+import { dbGetUserByUsername, dbGetUserExtensions } from '../services/db.service';
+
+@InputType()
+export class ExtensionListInput {
+  
+  @Field()
+  provider: ExtensionEnum;
+
+  @Field()
+  account: string;
+
+}
+
+@ArgsType()
+export class UpdateUserExtensionsInput {
+
+  @Field(() => [ExtensionListInput])
+  extensionList: ExtensionListInput[];
+
+}
 
 @Resolver(of => UserProfile)
 export class UserProfileResolver implements ResolverInterface<UserProfile> {
@@ -17,11 +37,13 @@ export class UserProfileResolver implements ResolverInterface<UserProfile> {
     @Arg('username') username: string
   ): Promise<UserProfile> {
     
+    /* fetch from db */
+    const [err, userRow] = await dbGetUserByUsername(username);
+    if (err !== null || userRow.length === 0)
+      throw new UserInputError('user does not exist');
+
     let newUserProfile = new UserProfile();
-    newUserProfile.username = username;
-    newUserProfile.email = 'lmao@lamo.com';
-    newUserProfile.avatar = '';
-    newUserProfile.extensions = [];
+    newUserProfile.username = userRow[0].username;
 
     return newUserProfile;
 
@@ -43,6 +65,9 @@ export class UserProfileResolver implements ResolverInterface<UserProfile> {
     @Arg('from', { nullable: true }) from: string,
     @Arg('to', { nullable: true }) to: string
   ): Promise<Heatmap[]> {
+
+    // const [err, extensionRows] = await dbGetUserExtensions(userProfile.username);
+    // console.log(extensionRows);
 
     /* find out which extensions the user has */
     const extensionMap: Map<ExtensionEnum, string> = new Map([
@@ -82,16 +107,17 @@ export class UserProfileResolver implements ResolverInterface<UserProfile> {
     return [];
   }
 
-  // hook this up with auth later
-  // @Mutation(() => UserProfile)
-  // async updateUserExtensions(
-  //   @Arg('extensionList') extensionList: Extension[]
-  // ) {
+  @Mutation(() => String)
+  async updateUserExtensions(
+    @Args() extensionList : UpdateUserExtensionsInput
+  ) {
     
-  //   /* wipe all of user's extensions */
+    /* wipe all of user's extensions */
 
-  //   /* reinsert them all */
+    /* reinsert them all */
 
-  // }
+    return '';
+
+  }
 
 }

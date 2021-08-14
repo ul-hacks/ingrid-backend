@@ -1,7 +1,7 @@
 
 import {
-  InputType, Resolver, Mutation,
-  Field, Arg, Ctx
+  ArgsType, Resolver, Mutation,
+  Field, Arg, Args, Ctx
 } from 'type-graphql';
 import { ApolloError, AuthenticationError } from 'apollo-server-express';
 import * as bcrypt from 'bcryptjs';
@@ -13,7 +13,7 @@ import { PASSWORD_SALT } from '../config';
 import { SessionContext } from '../types/context.types'
 import { dbRegisterUser, dbGetUserByUsername } from '../services/db.service';
 
-@InputType()
+@ArgsType()
 export class RegisterUserInput {
 
     @Field() @MaxLength(64)
@@ -24,7 +24,7 @@ export class RegisterUserInput {
     password: string;
 }
 
-@InputType()
+@ArgsType()
 export class LoginUserInput {
     
   @Field()
@@ -40,7 +40,7 @@ export class AuthResolver {
 
   @Mutation(() => String)
   async registerUser(
-      @Arg('args') { username, password }: RegisterUserInput
+      @Args() { username, password }: RegisterUserInput
   ) {
 
     const hashedPass = await bcrypt.hash(password, PASSWORD_SALT);
@@ -53,7 +53,7 @@ export class AuthResolver {
 
   @Mutation(() => String)
   async loginUser(
-    @Arg('args') { username, password }: LoginUserInput,
+    @Args() { username, password }: LoginUserInput,
     @Ctx() ctx: SessionContext
   ) {
 
