@@ -2,6 +2,15 @@
 FROM rust:latest
 WORKDIR /src/app
 
-COPY . .
+COPY dummy.rs .
+COPY Cargo.toml .
 
-RUN cargo install --path .
+RUN sed -i 's#src/main.rs#dummy.rs#' Cargo.toml
+# Drop release if you want debug builds. This step cache's our deps!
+RUN cargo build --release
+# Now return the file back to normal
+RUN sed -i 's#dummy.rs#src/main.rs#' Cargo.toml
+
+COPY . .
+# Now this only builds our changes to things like src
+RUN cargo build --release
