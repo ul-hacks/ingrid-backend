@@ -18,3 +18,18 @@ run:
 
 storage:
 	docker-compose -f docker-compose.storages.yml up -d
+
+build-for-prod:
+	docker-compose -f docker-compose.yml -f docker-compose.storages.yml build
+
+build-app-for-prod:
+	docker-compose \
+		-f docker-compose.yml \
+		-f docker-compose.storages.yml \
+		build app
+
+push:
+	docker-compose \
+		-f docker-compose.yml \
+		-f docker-compose.storages.yml \
+		push

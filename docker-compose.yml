@@ -68,7 +68,7 @@ services:
             - python3
             - main.py
         environment: 
-            GITHUB_TOKEN=${GITHUB_TOKEN}
+            GITHUB_TOKEN: ${GITHUB_TOKEN}
         ports:
             - 8086
 
