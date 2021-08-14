@@ -7,8 +7,7 @@ services:
         ports:
             - 8080:8080
         entrypoint:
-            - cargo
-            - run
+            - target/release/ingrid
             - server
     server-go:
         image: ulhacks/ingrid-backend-go:latest
@@ -23,7 +22,7 @@ services:
         image: ulhacks/ingrid-backend-node:latest
         # todo: daniel figure stuff out here
         ports:
-            - 8079:8079
+            - 5001:5001
         entrypoint:
             # todo: daniel, add in what you would do, ie npm start, etc.
             - npm
@@ -45,13 +44,12 @@ services:
             - /go/bin/app
             - provider_discovery
         ports:
-            - 8083
+            - 8083:8083
     
     providers-rust:
         image: ulhacks/ingrid-backend-rust:latest
         entrypoint:
-            - cargo
-            - run
+            - target/release/ingrid
             - providers
         ports:
             - 8084
@@ -63,5 +61,13 @@ services:
             - provider
         ports:
             - 8085
+
+    providers-python:
+        image: ulhacks/ingrid-backend-python:latest
+        command:
+            - python3
+            - main.py
+        ports:
+            - 8086
 
     # frontend:
