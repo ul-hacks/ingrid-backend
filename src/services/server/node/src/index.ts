@@ -7,6 +7,7 @@ import session from 'express-session';
 import cors from 'cors';
 import connectRedis from 'connect-redis';
 import Redis from 'ioredis';
+import redis from 'redis'
 
 import { SESSION_SECRET } from './config';
 import { UserProfileResolver } from './resolvers/user.resolver';
@@ -26,8 +27,9 @@ const main = async () => {
   const app = express();
 
   const RedisStore = connectRedis(session);
+  let redisClient = redis.createClient("http://redis:6379/");
   app.use(session({
-    store: new RedisStore({ client: new Redis() as any }),
+    store: new RedisStore({ client: redisClient as any }),
     name: 'session',
     secret: SESSION_SECRET,
     resave: false,
