@@ -5,12 +5,12 @@ import { buildSchema } from 'type-graphql';
 import express  from 'express';
 import cors from 'cors';
 
-import { UserResolver } from './resolvers/user.resolver';
+import { UserProfileResolver } from './resolvers/user.resolver';
 
 const main = async () => {
 
   const schema = await buildSchema({
-    resolvers: [UserResolver]
+    resolvers: [UserProfileResolver]
   });
 
   const apollo = new ApolloServer({ schema });
