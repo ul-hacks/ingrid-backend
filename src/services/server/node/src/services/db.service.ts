@@ -27,12 +27,27 @@ export const dbRegisterUser = async (username: string, password: string) =>
   .then((res) => [null, res.rows[0].id])
   .catch(err => [err, null])
 
-export const dbFindUserId = async (username: string) =>
+// export const dbFindUserId = async (username: string) =>
+//   postgresClient.query(
+//     'SELECT id FROM Users WHERE username = $1',
+//     [username]
+//   )
+//   .then((res) => [null, res.rows[0].id])
+//   .catch(err => [err, null])
+
+// export const dbGetUserHashedPass = async (username: string) =>
+//   postgresClient.query(
+//     'SELECT id, password FROM Users WHERE username = $1',
+//     [username]
+//   )
+//   .then((res) => [null, res.rows[0]])
+//   .catch(err => [err, null])
+
+export const dbGetUserByUsername = async (username: string) =>
   postgresClient.query(
-    'SELECT id FROM Users WHERE username = $1',
+    'SELECT * FROM Users WHERE username = $1',
     [username]
   )
   .then((res) => [null, res.rows])
   .catch(err => [err, null])
-
 

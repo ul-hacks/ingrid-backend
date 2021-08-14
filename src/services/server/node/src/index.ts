@@ -25,20 +25,20 @@ const main = async () => {
   });
   const app = express();
 
-  // const RedisStore = connectRedis(session);
-
-  // app.use(session({
-  //   store: new RedisStore({ client: new Redis() as any }),
-  //   name: 'session',
-  //   secret: SESSION_SECRET,
-  //   resave: false,
-  //   saveUninitialized: false,
-  //   cookie: {
-  //     httpOnly: true,
-  //     secure: process.env.NODE_ENV === "production",
-  //     maxAge: 1000*60*60*24*7*365
-  //   }
-  // }));
+  const RedisStore = connectRedis(session);
+  app.use(session({
+    store: new RedisStore({ client: new Redis() as any }),
+    name: 'session',
+    secret: SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 1000*60*60*24*7*365
+    }
+  }));
+  console.log('redis connection established');
 
   app.use(express.json());
   app.use(cors());
