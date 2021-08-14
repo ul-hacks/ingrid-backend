@@ -24,8 +24,11 @@ services:
         # todo: daniel figure stuff out here
         ports:
             - 8079:8079
-        # entrypoint:
+        entrypoint:
             # todo: daniel, add in what you would do, ie npm start, etc.
+            - npm
+            - run
+            - watch
     
     authn:
         image: ulhacks/ingrid-backend-go:latest
