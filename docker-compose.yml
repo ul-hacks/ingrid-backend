@@ -5,7 +5,11 @@ services:
         image: ulhacks/ingrid-backend-rust:latest
         # specify specific ports we want to use here:
         ports:
-            - 8080
+            - 8080:8080
+        entrypoint:
+            - cargo
+            - run
+            - server
     server-go:
         image: ulhacks/ingrid-backend-go:latest
         # specify specific ports to use:
@@ -30,10 +34,14 @@ services:
             - /go/bin/app
             - provider_discovery
         ports:
-            - 8080:8083
+            - 8083
     
     providers-rust:
         image: ulhacks/ingrid-backend-rust:latest
+        entrypoint:
+            - cargo
+            - run
+            - providers
         ports:
             - 8084
 
