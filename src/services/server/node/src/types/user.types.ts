@@ -8,6 +8,9 @@ export class UserProfile {
   username: string;
 
   @Field()
+  email: string;
+
+  @Field()
   avatar: string;
 
   @Field(() => [Extension])
@@ -36,8 +39,13 @@ export class Heatmap {
   provider: string;
 
   @Field()
-  weight: number;
+  heatmapItems: HeatmapItem[]
 
+}
+
+export type HeatmapItem = {
+  weight: number,
+  date: string
 }
 
 @ObjectType()
