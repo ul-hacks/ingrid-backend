@@ -2,6 +2,7 @@ use std::io::prelude::*;
 use std::net::TcpListener;
 use std::net::TcpStream;
 use std::env;
+mod services;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -23,8 +24,9 @@ fn main() {
 
         for stream in listener.incoming() {
             let stream = stream.unwrap();
-            handle_server(stream);
+            services::providers::rust::server::stuff(stream);
         }
+
     }
 }
 
