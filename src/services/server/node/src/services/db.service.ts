@@ -24,7 +24,15 @@ export const dbRegisterUser = async (username: string, password: string) =>
     'INSERT INTO Users(username, password) VALUES($1, $2) RETURNING id',
     [username, password]
   )
-  .then((res) => res.rows[0].id)
-  .catch(err => err)
+  .then((res) => [null, res.rows[0].id])
+  .catch(err => [err, null])
+
+export const dbFindUserId = async (username: string) =>
+  postgresClient.query(
+    'SELECT id FROM Users WHERE username = $1',
+    [username]
+  )
+  .then((res) => [null, res.rows])
+  .catch(err => [err, null])
 
 
