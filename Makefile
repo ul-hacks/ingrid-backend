@@ -6,4 +6,7 @@ build:
 
 # compose command
 run:
-	docker-compose up
+	docker-compose -f docker-compose.yml up
+
+storage:
+	docker-compose -f docker-compose.storages.yml up -d
