@@ -9,7 +9,7 @@ import connectRedis from 'connect-redis';
 import Redis from 'ioredis';
 import redis from 'redis'
 
-import { SESSION_SECRET } from './config';
+import { SESSION_SECRET, REDIS_CONNECTION_STRING } from './config';
 import { UserProfileResolver } from './resolvers/user.resolver';
 import { AuthResolver } from './resolvers/auth.resolver';
 import { postgresConnect } from './services/db.service';
@@ -27,8 +27,8 @@ const main = async () => {
   const app = express();
 
   const RedisStore = connectRedis(session);
-  // let redisClient = redis.createClient("http://redis:6379/");
-  let redisClient = redis.createClient();
+  let redisClient = redis.createClient(REDIS_CONNECTION_STRING);
+  // let redisClient = redis.createClient();
   app.use(session({
     store: new RedisStore({ client: redisClient as any }),
     name: 'session',
@@ -48,7 +48,7 @@ const main = async () => {
 
   apollo.applyMiddleware({ app });
 
-  app.listen(5001, () => {
+  app.listen(5002, () => {
     console.log('server started');
   });
 
