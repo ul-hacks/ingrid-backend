@@ -12,7 +12,7 @@ const apiClient = axios.create({
   }
 });
 
-export const getExtension = async (provider: ExtensionEnum, account: string): Promise<HeatmapItem[]> => {
+export const getExtension = async (provider: ExtensionEnum, account: string): Promise<[Error|null,HeatmapItem[]|null]> => {
 
   switch (provider) {
     case ExtensionEnum.GITHUB:
@@ -20,16 +20,21 @@ export const getExtension = async (provider: ExtensionEnum, account: string): Pr
   }
 
   // if we reached here, it's invalid enum, so error
-  return [];
+  return [new Error(''), null];
 
 }
 
-export const getGithubExtension = async (username: string) => { 
+export const getGithubExtension = async (username: string): Promise<[Error|null,HeatmapItem[]|null]> => {
   try {
-    const resp = await apiClient.get<HeatmapItem[]>('/github', { params: { username } });
-    return resp.data;
+    const requestBody = {
+      extension: 'github',
+      account: username
+    };
+
+    const resp = await apiClient.get<{response: HeatmapItem[]}>('/data', { data: requestBody});
+    return [null, resp.data.response];
   } catch(err) {
-    throw err;
+    return [err, null]
   }
 }
 

@@ -1,6 +1,10 @@
 
 import { Client } from 'pg';
+import format from 'pg-format';
+
 import { POSTGRES_CONNECTION_STRING } from '../config';
+
+import { Extension } from '../types/user.types';
 
 export const postgresClient = new Client({
   connectionString: POSTGRES_CONNECTION_STRING
@@ -27,22 +31,6 @@ export const dbRegisterUser = async (username: string, password: string) =>
   .then((res) => [null, res.rows[0].id])
   .catch(err => [err, null])
 
-// export const dbFindUserId = async (username: string) =>
-//   postgresClient.query(
-//     'SELECT id FROM Users WHERE username = $1',
-//     [username]
-//   )
-//   .then((res) => [null, res.rows[0].id])
-//   .catch(err => [err, null])
-
-// export const dbGetUserHashedPass = async (username: string) =>
-//   postgresClient.query(
-//     'SELECT id, password FROM Users WHERE username = $1',
-//     [username]
-//   )
-//   .then((res) => [null, res.rows[0]])
-//   .catch(err => [err, null])
-
 export const dbGetUserByUsername = async (username: string) =>
   postgresClient.query(
     'SELECT * FROM Users WHERE username = $1',
@@ -50,4 +38,42 @@ export const dbGetUserByUsername = async (username: string) =>
   )
   .then((res) => [null, res.rows])
   .catch(err => [err, null])
+
+// CREATE TYPE providerenum AS ENUM ('github', 'gitlab');
+// CREATE TABLE Extensions (
+//   id serial primary key,
+//   userid int not null,
+//   provider providerenum not null,
+//   account varchar(256) not null,
+//   CONSTRAINT userid_foreign FOREIGN KEY (userid) REFERENCES Users (id)
+// );
+
+export const dbGetUserExtensions = async (username: string) =>
+  postgresClient.query(
+    `SELECT * FROM Users U INNER JOIN Extensions E ON U.id = E.userid
+    WHERE U.username = $1`,
+    [username]
+  )
+  .then((res) => [null, res.rows])
+  .catch(err => [err, null])
+
+export const dbWipeUserExtensions = async (userid: number) =>
+  postgresClient.query(
+    'DELETE FROM Extensions WHERE userid = $1',
+    [userid]
+  )
+  .then((res) => [null, 'OK'])
+  .catch(err => [err, null])
+
+export const dbSetUserExtensions = async (userid: number, extensions: Extension[]) => {
+
+  const formattedValues = extensions.map(extension => [userid, extension.provider, extension.account]);
+
+  return postgresClient.query(format(
+    'INSERT INTO Extensions (userid, provider, account) VALUES %L',
+    formattedValues 
+  ))
+  .then((res) => [null, 'OK'])
+  .catch(err => [err, null])
+}
 

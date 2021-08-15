@@ -12,12 +12,6 @@ export class UserProfile {
   @Field()
   username: string;
 
-  @Field()
-  email: string;
-
-  @Field()
-  avatar: string;
-
   @Field(() => [Extension])
   extensions: Extension[];
 
