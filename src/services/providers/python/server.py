@@ -4,20 +4,26 @@ import json
 import os
 import random
 import requests
+import fetch_git_data
+import fetch_lingo_data
+import fetch_lab_data
 
-from src.services.providers.python.fetch_git_data import github_data
 
 def create_app():
     app = Flask(__name__)
     cors = CORS(app)
     app.config['CORS_HEADERS'] = 'Content-Type'
 
-    EXTENSIONS = {"github":github_data}
-    @app.route('/data', methods = ["GET"])
+    @app.route('/data', methods=["GET"])
     def check():
-        print("hello there child")
         data = json.loads(request.get_data().decode('UTF-8'))
+        extension = data["extension"]
 
-        return EXTENSIONS[data["extension"]](data["username"])
+        if extension == "github":
+            return fetch_git_data.github_data(data["account"])
+        elif extension == "duolingo":
+            return fetch_lingo_data.duolingo_data(data["account"])
+        elif extension == "gitlab":
+            return fetch_lab_data.gitlab_data(data["account"])
 
     return app
