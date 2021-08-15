@@ -17,6 +17,10 @@ export const getExtension = async (provider: ExtensionEnum, account: string): Pr
   switch (provider) {
     case ExtensionEnum.GITHUB:
       return getGithubExtension(account);
+    case ExtensionEnum.GITLAB:
+      return getGitlabExtension(account);
+    case ExtensionEnum.DUOLINGO:
+      return getDuolingoExtension(account);
   }
 
   // if we reached here, it's invalid enum, so error
@@ -27,7 +31,7 @@ export const getExtension = async (provider: ExtensionEnum, account: string): Pr
 export const getGithubExtension = async (username: string): Promise<[Error|null,HeatmapItem[]|null]> => {
   try {
     const requestBody = {
-      extension: 'github',
+      extension: ExtensionEnum.GITHUB,
       account: username
     };
 
@@ -38,4 +42,30 @@ export const getGithubExtension = async (username: string): Promise<[Error|null,
   }
 }
 
-export const getGitlabExtension = async (username: string) => { }
+export const getGitlabExtension = async (usernameAndName: string): Promise<[Error|null,HeatmapItem[]|null]> => {
+  try {
+    const requestBody = {
+      extension: ExtensionEnum.GITLAB,
+      account: usernameAndName
+    };
+
+    const resp = await apiClient.get<{response: HeatmapItem[]}>('/data', { data: requestBody });
+    return [null, resp.data.response];
+  } catch(err) {
+    return [err, null]
+  }
+}
+
+export const getDuolingoExtension = async (usernameAndPassword: string): Promise<[Error|null,HeatmapItem[]|null]> => {
+  try {
+    const requestBody = {
+      extension: ExtensionEnum.DUOLINGO,
+      account: usernameAndPassword
+    };
+
+    const resp = await apiClient.get<{response: HeatmapItem[]}>('/data', { data: requestBody });
+    return [null, resp.data.response];
+  } catch(err) {
+    return [err, null]
+  }
+}

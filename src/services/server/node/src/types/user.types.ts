@@ -3,7 +3,8 @@ import { Field, ObjectType } from 'type-graphql'
 
 export const enum ExtensionEnum {
   GITHUB = 'github',
-  GITLAB = 'gitlab'
+  GITLAB = 'gitlab',
+  DUOLINGO = 'duolingo'
 }
 
 @ObjectType()
