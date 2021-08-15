@@ -1,5 +1,5 @@
-print("hello there")
+from src.services.providers.python.server import create_app
+
+app = create_app()
 if __name__ == '__main__':
-    # figure out flask -- call server.py or smth
-    # bind to 0.0.0.0:8086 please!
-    pass
+    app.run(debug=False, host="0.0.0.0", port=8086)

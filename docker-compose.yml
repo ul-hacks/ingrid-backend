@@ -1,14 +1,14 @@
 version: '3.7'
 
 services:
-    server-rust:
-        image: ulhacks/ingrid-backend-rust:latest
-        # specify specific ports we want to use here:
-        ports:
-            - 8080:8080
-        entrypoint:
-            - target/release/ingrid
-            - server
+    # server-rust:
+    #     image: ulhacks/ingrid-backend-rust:latest
+    #     # specify specific ports we want to use here:
+    #     ports:
+    #         - 8080:8080
+    #     entrypoint:
+    #         - target/release/ingrid
+    #         - server
     server-go:
         image: ulhacks/ingrid-backend-go:latest
         # specify specific ports to use:
@@ -17,6 +17,17 @@ services:
             - server
         ports:
             - 8081
+
+    server-node:
+        image: ulhacks/ingrid-backend-node:latest
+        # todo: daniel figure stuff out here
+        ports:
+            - 5001:5001
+        entrypoint:
+            # todo: daniel, add in what you would do, ie npm start, etc.
+            - npm
+            - run
+            - watch
     
     authn:
         image: ulhacks/ingrid-backend-go:latest
@@ -35,13 +46,13 @@ services:
         ports:
             - 8083:8083
     
-    providers-rust:
-        image: ulhacks/ingrid-backend-rust:latest
-        entrypoint:
-            - target/release/ingrid
-            - providers
-        ports:
-            - 8084
+    # providers-rust:
+    #     image: ulhacks/ingrid-backend-rust:latest
+    #     entrypoint:
+    #         - target/release/ingrid
+    #         - providers
+    #     ports:
+    #         - 8084
 
     providers-go:
         image: ulhacks/ingrid-backend-go:latest
@@ -56,6 +67,8 @@ services:
         command:
             - python3
             - main.py
+        environment: 
+            GITHUB_TOKEN: ${GITHUB_TOKEN}
         ports:
             - 8086
 
