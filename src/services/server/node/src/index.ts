@@ -27,7 +27,8 @@ const main = async () => {
   const app = express();
 
   const RedisStore = connectRedis(session);
-  let redisClient = redis.createClient("http://redis:6379/");
+  // let redisClient = redis.createClient("http://redis:6379/");
+  let redisClient = redis.createClient();
   app.use(session({
     store: new RedisStore({ client: redisClient as any }),
     name: 'session',

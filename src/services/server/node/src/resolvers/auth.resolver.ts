@@ -10,7 +10,7 @@ import { MaxLength } from 'class-validator';
 import { IsUsernameNotRegistered } from '../middleware/validation';
 
 import { PASSWORD_SALT } from '../config';
-import { SessionContext } from '../types/context.types'
+import { SessionContext } from '../types/context.types';
 import { dbRegisterUser, dbGetUserByUsername } from '../services/db.service';
 
 @ArgsType()

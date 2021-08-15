@@ -1,6 +1,10 @@
 
 import { Client } from 'pg';
+import format from 'pg-format';
+
 import { POSTGRES_CONNECTION_STRING } from '../config';
+
+import { Extension } from '../types/user.types';
 
 export const postgresClient = new Client({
   connectionString: POSTGRES_CONNECTION_STRING
@@ -53,10 +57,23 @@ export const dbGetUserExtensions = async (username: string) =>
   .then((res) => [null, res.rows])
   .catch(err => [err, null])
 
-// export const dbWipeUserExtensions = async (username: string) =>
-//   postgresClient.query(
-  
-//   )
+export const dbWipeUserExtensions = async (userid: number) =>
+  postgresClient.query(
+    'DELETE FROM Extensions WHERE userid = $1',
+    [userid]
+  )
+  .then((res) => [null, 'OK'])
+  .catch(err => [err, null])
 
-// export const dbSetUserExtensions = async (username: string) =>
-  
+export const dbSetUserExtensions = async (userid: number, extensions: Extension[]) => {
+
+  const formattedValues = extensions.map(extension => [userid, extension.provider, extension.account]);
+
+  return postgresClient.query(format(
+    'INSERT INTO Extensions (userid, provider, account) VALUES %L',
+    formattedValues 
+  ))
+  .then((res) => [null, 'OK'])
+  .catch(err => [err, null])
+}
+
