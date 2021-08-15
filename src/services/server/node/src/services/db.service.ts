@@ -39,6 +39,14 @@ export const dbGetUserByUsername = async (username: string) =>
   .then((res) => [null, res.rows])
   .catch(err => [err, null])
 
+export const dbGetUserById = async (userid: number) =>
+  postgresClient.query(
+    'SELECT * FROM Users WHERE id = $1',
+    [userid]
+  )
+  .then((res) => [null, res.rows])
+  .catch(err => [err, null])
+
 // CREATE TYPE providerenum AS ENUM ('github', 'gitlab');
 // CREATE TABLE Extensions (
 //   id serial primary key,

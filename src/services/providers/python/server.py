@@ -4,9 +4,9 @@ import json
 import os
 import random
 import requests
-import fetch_git_data
-import fetch_lingo_data
-import fetch_lab_data
+import src.services.providers.python.fetch_git_data
+import src.services.providers.python.fetch_lingo_data
+import src.services.providers.python.fetch_lab_data
 
 
 def create_app():

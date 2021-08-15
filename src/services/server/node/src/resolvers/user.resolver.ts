@@ -8,7 +8,7 @@ import { ApolloError, UserInputError, ForbiddenError } from 'apollo-server-error
 
 import { UserProfile, Extension, Heatmap, Badge, HeatmapItem, ExtensionEnum } from '../types/user.types';
 import { getExtension } from '../services/extension.service';
-import { dbGetUserByUsername, dbGetUserExtensions, dbSetUserExtensions, dbWipeUserExtensions } from '../services/db.service';
+import { dbGetUserByUsername, dbGetUserExtensions, dbSetUserExtensions, dbWipeUserExtensions, dbGetUserById } from '../services/db.service';
 import { SessionContext } from '../types/context.types';
 
 @InputType()
@@ -35,11 +35,18 @@ export class UserProfileResolver implements ResolverInterface<UserProfile> {
 
   @Query(() => UserProfile)
   async getUserProfile(
-    @Arg('username') username: string
+    @Arg('username', { nullable: true }) username: string,
+    @Ctx() ctx: SessionContext
   ): Promise<UserProfile> {
+
+    /* if username is null, assume current user */
+    if (username == null) {
+      if (!ctx.req.session!.userId)
+        throw new UserInputError('request set to null but not signed in');
+    }
     
     /* fetch from db */
-    const [err, userRow] = await dbGetUserByUsername(username);
+    const [err, userRow] = (username == null) ? await dbGetUserById(ctx.req.session!.userId) : await dbGetUserByUsername(username);
     if (err !== null || userRow.length === 0)
       throw new UserInputError('user does not exist');
 
